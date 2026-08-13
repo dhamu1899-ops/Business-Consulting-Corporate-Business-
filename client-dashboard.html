@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Client Dashboard - Stackly Consulting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       STACKLY DASHBOARDS - SELF-CONTAINED CYAN DESIGN SYSTEM
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body.admin-dashboard-body {
+      background-color: #F8FAFC !important;
+      color: #1E293B !important;
+      font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif !important;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .admin-app {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* --- Sidebar --- */
+    .admin-sidebar {
+      width: 260px;
+      background-color: #FFFFFF;
+      border-right: 1px solid #E2E8F0;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+      padding: 24px 18px;
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .admin-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #1F2421;
+      text-decoration: none;
+      margin-bottom: 28px;
+      padding-left: 6px;
+    }
+
+    .admin-logo img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .admin-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .admin-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #64748B;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .admin-nav a:hover,
+    .admin-nav a.active {
+      background-color: rgba(0, 162, 207, 0.1);
+      color: #00A2CF;
+    }
+
+    .admin-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+      color: currentColor;
+    }
+
+    .admin-badge {
+      margin-left: auto;
+      background-color: #00A2CF;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .upgrade-card {
+      background: linear-gradient(135deg, #00A2CF 0%, #0088B0 100%);
+      color: #FFFFFF;
+      border-radius: 16px;
+      padding: 20px 16px;
+      margin: 16px 0;
+      text-align: center;
+      box-shadow: 0 10px 24px rgba(0, 162, 207, 0.3);
+    }
+
+    .upgrade-icon {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .upgrade-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .upgrade-card p {
+      font-size: 12px;
+      opacity: 0.9;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .upgrade-card button {
+      background-color: #FFFFFF;
+      color: #00A2CF;
+      border: none;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .upgrade-card button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .admin-sidebar-bottom {
+      border-top: 1px solid #E2E8F0;
+      padding-top: 16px;
+      margin-top: auto;
+    }
+
+    .admin-mini-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 6px 8px;
+    }
+
+    .admin-mini-profile div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-mini-profile strong {
+      font-size: 13px;
+      color: #1E293B;
+    }
+
+    .admin-mini-profile span {
+      font-size: 11px;
+      color: #00A2CF;
+      font-weight: 600;
+    }
+
+    .admin-mini-profile small {
+      font-size: 10px;
+      color: #94A3B8;
+    }
+
+    .admin-logout {
+      width: 100%;
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      color: #64748B;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+    }
+
+    .admin-logout:hover {
+      background-color: #EF4444;
+      color: #FFFFFF;
+      border-color: #EF4444;
+    }
+
+    /* --- Main Container --- */
+    .admin-main {
+      flex: 1;
+      margin-left: 260px;
+      padding: 32px 40px;
+      min-width: 0;
+    }
+
+    .admin-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      gap: 20px;
+    }
+
+    .admin-search {
+      position: relative;
+      width: 360px;
+    }
+
+    .admin-search input {
+      width: 100%;
+      padding: 11px 16px 11px 40px;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      background-color: #FFFFFF;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .admin-search input:focus {
+      border-color: #00A2CF;
+      box-shadow: 0 0 0 3px rgba(0, 162, 207, 0.15);
+    }
+
+    .admin-search span {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94A3B8;
+      font-size: 15px;
+    }
+
+    .admin-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .admin-action-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #475569;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+
+    .admin-action-icon:hover {
+      background-color: rgba(0, 162, 207, 0.1);
+      color: #00A2CF;
+      border-color: rgba(0, 162, 207, 0.3);
+    }
+
+    .admin-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background-color: #00A2CF;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #FFFFFF;
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background-color: #FFFFFF;
+      padding: 6px 16px 6px 6px;
+      border-radius: 30px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .admin-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .admin-profile div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-profile strong {
+      font-size: 13px;
+      color: #1E293B;
+      line-height: 1.2;
+    }
+
+    .admin-profile span {
+      font-size: 11px;
+      color: #00A2CF;
+      font-weight: 600;
+    }
+
+    .admin-profile small {
+      font-size: 10px;
+      color: #94A3B8;
+    }
+
+    /* Page Tab Views */
+    .admin-page {
+      display: none;
+      animation: fadeInDash 0.35s ease forwards;
+    }
+
+    .admin-page.active {
+      display: block;
+    }
+
+    @keyframes fadeInDash {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .admin-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .admin-title-row h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1F2421;
+      margin-bottom: 4px;
+    }
+
+    .admin-title-row p {
+      font-size: 13.5px;
+      color: #64748B;
+    }
+
+    .admin-select, .admin-date {
+      background-color: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .admin-select:hover, .admin-date:hover {
+      border-color: #00A2CF;
+      color: #00A2CF;
+    }
+
+    .primary-dash-btn {
+      background-color: #00A2CF;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 162, 207, 0.25);
+      transition: all 0.25s ease;
+    }
+
+    .primary-dash-btn:hover {
+      background-color: #0088B0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 162, 207, 0.35);
+    }
+
+    /* KPI Cards Row */
+    .admin-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .admin-kpi {
+      background-color: #FFFFFF;
+      border-radius: 16px;
+      padding: 22px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .admin-kpi:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 162, 207, 0.3);
+      box-shadow: 0 12px 28px rgba(0, 162, 207, 0.15);
+    }
+
+    .admin-kpi-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .admin-kpi-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background-color: rgba(0, 162, 207, 0.1);
+      color: #00A2CF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .admin-kpi-top div span {
+      font-size: 12px;
+      color: #64748B;
+      font-weight: 600;
+      display: block;
+    }
+
+    .admin-kpi-top div strong {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1E293B;
+      line-height: 1.2;
+    }
+
+    .admin-trend {
+      font-size: 12px;
+      font-weight: 600;
+      color: #10B981;
+      margin-bottom: 12px;
+    }
+
+    .admin-trend span {
+      color: #94A3B8;
+      font-weight: 400;
+    }
+
+    .sparkline svg path {
+      stroke: #00A2CF !important;
+    }
+
+    /* Dashboard Panels & Grids */
+    .admin-grid, .user-dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .admin-panel {
+      background-color: #FFFFFF;
+      border-radius: 18px;
+      padding: 24px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+    }
+
+    .admin-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .admin-panel-head h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #1E293B;
+    }
+
+    .admin-view {
+      font-size: 12px;
+      font-weight: 700;
+      color: #00A2CF;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .admin-view:hover {
+      text-decoration: underline;
+    }
+
+    /* Charts & Donut */
+    .admin-chart svg {
+      width: 100%;
+      height: 220px;
+    }
+
+    .donut-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .donut {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: conic-gradient(#00A2CF 0% 40%, #10B981 40% 70%, #F59E0B 70% 83%, #CBD5E1 83% 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .donut:before {
+      content: "";
+      width: 80px;
+      height: 80px;
+      background-color: #FFFFFF;
+      border-radius: 50%;
+    }
+
+    .status-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .status-list div {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #475569;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    .legend-dot.green { background-color: #10B981; }
+    .legend-dot.red { background-color: #00A2CF; }
+    .legend-dot.yellow { background-color: #F59E0B; }
+    .legend-dot.gray { background-color: #CBD5E1; }
+
+    /* Status Tags */
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    .tag.greentag { background-color: rgba(16, 185, 129, 0.12); color: #10B981; }
+    .tag.redtag { background-color: rgba(0, 162, 207, 0.12); color: #00A2CF; }
+    .tag.yellowtag { background-color: rgba(245, 158, 11, 0.12); color: #F59E0B; }
+
+    /* Data Tables & Lists */
+    .big-table {
+      overflow-x: auto;
+    }
+
+    .big-table table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .big-table th {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748B;
+      padding: 12px 16px;
+      border-bottom: 1px solid #E2E8F0;
+      background-color: #F8FAFC;
+    }
+
+    .big-table td {
+      font-size: 13px;
+      color: #334155;
+      padding: 14px 16px;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .big-table tr:hover td {
+      background-color: #F8FAFC;
+      cursor: pointer;
+    }
+
+    .dash-input {
+      width: 100%;
+      max-width: 320px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #E2E8F0;
+      font-size: 13px;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .dash-input:focus {
+      border-color: #00A2CF;
+    }
+
+    .mini-line {
+      display: inline-block;
+      width: 80px;
+      height: 6px;
+      background-color: #E2E8F0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .mini-line i {
+      display: block;
+      height: 100%;
+      background-color: #00A2CF;
+      border-radius: 4px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background-color: #E2E8F0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-track i {
+      display: block;
+      height: 100%;
+      background-color: #00A2CF;
+      border-radius: 4px;
+    }
+
+    .dash-filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .dash-filters button {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background-color: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      color: #64748B;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .dash-filters button.active, .dash-filters button:hover {
+      background-color: #00A2CF;
+      color: #FFFFFF;
+      border-color: #00A2CF;
+    }
+
+    /* Mobile Responsive Header */
+    .dashboard-mobile-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background-color: #FFFFFF;
+      border-bottom: 1px solid #E2E8F0;
+      margin: -24px -20px 24px -20px;
+    }
+
+    @media (min-width: 1025px) {
+      .dashboard-mobile-head {
+        display: none;
+      }
+    }
+
+    .dashboard-mobile-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #1F2421;
+      text-decoration: none;
+    }
+
+    .dashboard-mobile-brand img {
+      height: 32px;
+      width: auto;
+    }
+
+    .dashboard-mobile-toggle {
+      display: none;
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 10001;
+      background-color: #00A2CF;
+      color: #FFFFFF;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 162, 207, 0.4);
+    }
+
+    @media (max-width: 1024px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+      }
+
+      .admin-app.sidebar-open .admin-sidebar {
+        transform: translateX(0);
+      }
+
+      .admin-main {
+        margin-left: 0;
+        padding: 24px 20px;
+      }
+
+      .dashboard-mobile-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .admin-kpis {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .admin-grid, .user-dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .admin-kpis {
+        grid-template-columns: 1fr;
+      }
+
+      .admin-topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .admin-search {
+        width: 100%;
+      }
+    }
+  </style>
+
+</head>
+<body class="admin-dashboard-body user-dashboard-body">
+  <div class="admin-app admin-v2 user-app">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <a class="admin-logo" href="index.html">
+        <img src="home.img/01-header-logo.webp" alt="Stackly Logo">
+        <span>Stackly</span>
+      </a>
+      <nav class="admin-nav user-nav" aria-label="Dashboard navigation">
+        <a class="active" href="#dashboard" data-user-tab="dashboard" data-admin-tab="dashboard"><span class="admin-icon">⌂</span>Dashboard</a>
+        <a href="#projects" data-user-tab="projects" data-admin-tab="projects"><span class="admin-icon">▣</span>Projects</a>
+        <a href="#clients" data-user-tab="clients" data-admin-tab="clients"><span class="admin-icon">♟</span>Clients</a>
+        <a href="#invoices" data-user-tab="invoices" data-admin-tab="invoices"><span class="admin-icon">▤</span>Invoices</a>
+        <a href="#payments" data-user-tab="payments" data-admin-tab="payments"><span class="admin-icon">▭</span>Payments</a>
+        <a href="#messages" data-user-tab="messages" data-admin-tab="messages"><span class="admin-icon">✉</span>Messages <span class="admin-badge">5</span></a>
+        <a href="#notifications" data-user-tab="notifications" data-admin-tab="notifications"><span class="admin-icon">♧</span>Notifications <span class="admin-badge">3</span></a>
+        <a href="#profile" data-user-tab="profile" data-admin-tab="profile"><span class="admin-icon">♙</span>Profile</a>
+        <a href="#settings" data-user-tab="settings" data-admin-tab="settings"><span class="admin-icon">⚙</span>Settings</a>
+      </nav>
+      <div class="upgrade-card">
+        <div class="upgrade-icon">◇</div>
+        <h3>Upgrade to Pro</h3>
+        <p>Get exclusive advisory features &amp; priority 24/7 support.</p>
+        <button onclick="location.href='pricing.html'">Upgrade Now</button>
+      </div>
+      <div class="admin-sidebar-bottom">
+        <div class="admin-mini-profile">
+          <img class="admin-avatar" src="home.img/02-hero-customer-avatar-2.webp" alt="Avatar">
+          <div><strong>Client User</strong><span>Login Client</span><small>user@example.com</small></div>
+        </div>
+        <button class="admin-logout" data-user-tab="logout" data-admin-tab="logout"><span class="admin-icon">⇥</span> Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Body -->
+    <main class="admin-main">
+      <div class="dashboard-mobile-head" aria-label="Mobile dashboard header">
+        <a class="dashboard-mobile-brand" href="index.html">
+          <img src="home.img/01-header-logo.webp" alt="Stackly">
+          <span>Stackly</span>
+        </a>
+      </div>
+
+      <!-- Topbar Header -->
+      <div class="admin-topbar">
+        <label class="admin-search">
+          <input placeholder="Search projects, invoices, clients...">
+          <span>⌕</span>
+        </label>
+        <div class="admin-top-actions">
+          <a href="index.html" class="admin-action-icon" title="Public Website">⌂</a>
+          <span class="admin-action-icon" title="Notifications">♧<b class="admin-dot">3</b></span>
+          <span class="admin-action-icon" title="Messages">✉<b class="admin-dot">5</b></span>
+          <div class="admin-profile">
+            <img class="admin-avatar" src="home.img/02-hero-customer-avatar-2.webp" alt="Client User">
+            <div><strong>Client User</strong><span>Login Client</span><small>user@example.com</small></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 1: Dashboard Overview -->
+      <section class="admin-page active" id="dashboard">
+        <div class="admin-title-row">
+          <div><h1>Welcome back, Client User! 👋</h1><p>Here’s what’s happening across your projects today.</p></div>
+          <button class="admin-select">▣ &nbsp; May 01 - May 31, 2025</button>
+        </div>
+
+        <div class="admin-kpis">
+          <article class="admin-kpi">
+            <div class="admin-kpi-top"><b class="admin-kpi-icon">▣</b><div><span>Total Projects</span><strong>08</strong></div></div>
+            <p class="admin-trend">↑ 14.3% <span>vs last month</span></p>
+            <div class="sparkline"><svg viewBox="0 0 260 35"><path d="M0 25 C30 29 35 12 58 18 S89 31 110 17 139 29 160 13 184 25 205 10 230 21 260 8" fill="none" stroke="#00A2CF" stroke-width="3"/></svg></div>
+          </article>
+          <article class="admin-kpi">
+            <div class="admin-kpi-top"><b class="admin-kpi-icon">▤</b><div><span>Completed Projects</span><strong>05</strong></div></div>
+            <p class="admin-trend">↑ 25.0% <span>vs last month</span></p>
+            <div class="sparkline"><svg viewBox="0 0 260 35"><path d="M0 22 C25 20 34 28 58 12 S92 26 110 12 145 21 158 9 190 25 208 8 235 18 260 5" fill="none" stroke="#00A2CF" stroke-width="3"/></svg></div>
+          </article>
+          <article class="admin-kpi">
+            <div class="admin-kpi-top"><b class="admin-kpi-icon">$</b><div><span>Total Revenue</span><strong>$12,450</strong></div></div>
+            <p class="admin-trend">↑ 8.6% <span>vs last month</span></p>
+            <div class="sparkline"><svg viewBox="0 0 260 35"><path d="M0 25 C35 27 38 11 62 19 S88 10 110 18 143 5 164 20 190 4 210 13 236 8 260 2" fill="none" stroke="#00A2CF" stroke-width="3"/></svg></div>
+          </article>
+          <article class="admin-kpi">
+            <div class="admin-kpi-top"><b class="admin-kpi-icon">▰</b><div><span>Outstanding</span><strong>$2,350</strong></div></div>
+            <p class="admin-trend">↓ 5.2% <span>vs last month</span></p>
+            <div class="sparkline"><svg viewBox="0 0 260 35"><path d="M0 20 C26 14 42 29 66 15 S91 22 112 12 143 29 160 20 190 8 211 18 238 10 260 12" fill="none" stroke="#00A2CF" stroke-width="3"/></svg></div>
+          </article>
+        </div>
+
+        <div class="user-dashboard-grid">
+          <section class="admin-panel">
+            <div class="admin-panel-head"><h3>Project Progress</h3><button class="admin-select">This Month</button></div>
+            <div class="donut-wrap user-donut">
+              <div class="donut user-progress"></div>
+              <div class="status-list">
+                <div><span><i class="legend-dot green"></i>Completed</span><b>5 (62.5%)</b></div>
+                <div><span><i class="legend-dot red"></i>In Progress</span><b>2 (25%)</b></div>
+                <div><span><i class="legend-dot yellow"></i>On Hold</span><b>1 (12.5%)</b></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-panel" style="grid-column: span 2;">
+            <div class="admin-panel-head"><h3>Recent Projects</h3><a class="admin-view" href="#projects" data-user-tab="projects" data-admin-tab="projects">View All</a></div>
+            <div class="list-table project-progress-list">
+              <div style="padding: 12px 0; border-bottom: 1px solid #F1F5F9; display: flex; justify-content: space-between; align-items: center;">
+                <span><strong>◎ E-commerce Website</strong><br><small style="color:#64748B;">Due: May 28, 2025</small></span>
+                <span class="tag redtag">In Progress</span>
+                <span><span class="mini-line"><i style="width:75%"></i></span><strong>75%</strong></span>
+              </div>
+              <div style="padding: 12px 0; border-bottom: 1px solid #F1F5F9; display: flex; justify-content: space-between; align-items: center;">
+                <span><strong>▯ Mobile App Design</strong><br><small style="color:#64748B;">Due: May 26, 2025</small></span>
+                <span class="tag greentag">Completed</span>
+                <span><span class="mini-line"><i style="width:100%"></i></span><strong>100%</strong></span>
+              </div>
+              <div style="padding: 12px 0; display: flex; justify-content: space-between; align-items: center;">
+                <span><strong>◫ SEO Campaign</strong><br><small style="color:#64748B;">Due: May 24, 2025</small></span>
+                <span class="tag redtag">In Progress</span>
+                <span><span class="mini-line"><i style="width:60%"></i></span><strong>60%</strong></span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="admin-bottom-grid user-bottom-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <section class="admin-panel">
+            <div class="admin-panel-head"><h3>Invoice Overview</h3><a class="admin-view" data-user-tab="invoices" data-admin-tab="invoices" href="#invoices">View All</a></div>
+            <div style="font-size: 24px; font-weight: 800; color: #1E293B; margin-bottom: 12px;">$14,800</div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+              <span><b style="color:#10B981;">$10,250</b> Paid</span>
+              <span><b style="color:#F59E0B;">$2,350</b> Pending</span>
+            </div>
+          </section>
+          <section class="admin-panel">
+            <div class="admin-panel-head"><h3>Payment History</h3><a class="admin-view" data-user-tab="payments" data-admin-tab="payments" href="#payments">View All</a></div>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+              <div style="display: flex; justify-content: space-between;"><span>✓ Invoice #INV-1687</span><b style="color:#10B981;">$2,450</b></div>
+              <div style="display: flex; justify-content: space-between;"><span>✓ Invoice #INV-1686</span><b style="color:#10B981;">$1,850</b></div>
+            </div>
+          </section>
+          <section class="admin-panel">
+            <div class="admin-panel-head"><h3>Recent Messages</h3><a class="admin-view" data-user-tab="messages" data-admin-tab="messages" href="#messages">View All</a></div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <img src="home.img/11-team-sarah-keihl.webp" class="admin-avatar" style="width:32px; height:32px;">
+                <div style="font-size:12px;"><strong>Sarah Keihl</strong><br><span style="color:#64748B;">Project update attached</span></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Section 2: Projects Grid -->
+      <section class="admin-page" id="projects">
+        <div class="admin-title-row"><div><h1>Projects Pipeline</h1><p>Manage and track all live consulting deliverables.</p></div><button class="primary-dash-btn">+ New Project</button></div>
+        <div class="dash-filters"><button class="active">All Projects (8)</button><button>In Progress (2)</button><button>Completed (5)</button><button>On Hold (1)</button></div>
+        <section class="admin-panel big-table">
+          <input class="dash-input" placeholder="⌕ Search projects...">
+          <table>
+            <thead><tr><th>Project Name</th><th>Category</th><th>Status</th><th>Due Date</th><th>Progress</th><th>Budget</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr data-user-tab="project-detail" data-admin-tab="project-detail"><td>E-commerce Website</td><td>Web Development</td><td><span class="tag redtag">In Progress</span></td><td>May 28, 2025</td><td><span class="mini-line"><i style="width:75%"></i></span>75%</td><td>$4,250</td><td>•••</td></tr>
+              <tr><td>Mobile App Design</td><td>UI/UX Design</td><td><span class="tag greentag">Completed</span></td><td>May 26, 2025</td><td><span class="mini-line"><i style="width:100%"></i></span>100%</td><td>$3,500</td><td>•••</td></tr>
+              <tr><td>SEO Campaign</td><td>Digital Marketing</td><td><span class="tag redtag">In Progress</span></td><td>May 24, 2025</td><td><span class="mini-line"><i style="width:60%"></i></span>60%</td><td>$2,150</td><td>•••</td></tr>
+              <tr><td>Brand Identity Design</td><td>Branding</td><td><span class="tag yellowtag">On Hold</span></td><td>May 20, 2025</td><td><span class="mini-line"><i style="width:40%"></i></span>40%</td><td>$1,800</td><td>•••</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
+
+      <!-- Section 3: Clients -->
+      <section class="admin-page" id="clients">
+        <div class="admin-title-row"><div><h1>Client Accounts</h1><p>Active corporate clients and high-value partnerships.</p></div><button class="primary-dash-btn">+ Add Client</button></div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <article class="admin-panel"><h3>BrightTech Solutions</h3><p>4 Projects · $8,450</p><span class="tag greentag">Premium Account</span></article>
+          <article class="admin-panel"><h3>GrowthLab Inc.</h3><p>3 Projects · $6,230</p><span class="tag greentag">Active Account</span></article>
+          <article class="admin-panel"><h3>Creative Studio</h3><p>2 Projects · $4,320</p><span class="tag yellowtag">Under Review</span></article>
+        </div>
+      </section>
+
+      <!-- Section 4: Invoices -->
+      <section class="admin-page" id="invoices">
+        <div class="admin-title-row"><div><h1>Invoices &amp; Billing</h1><p>Manage pending and paid billing statements.</p></div></div>
+        <section class="admin-panel big-table">
+          <table>
+            <thead><tr><th>Invoice ID</th><th>Project</th><th>Date</th><th>Amount</th><th>Status</th><th>Due Date</th></tr></thead>
+            <tbody>
+              <tr data-user-tab="invoice-detail" data-admin-tab="invoice-detail"><td>INV-1687</td><td>E-commerce Website</td><td>Apr 28, 2025</td><td>$2,450</td><td><span class="tag greentag">Paid</span></td><td>Apr 30, 2025</td></tr>
+              <tr><td>INV-1686</td><td>Mobile App Design</td><td>Apr 20, 2025</td><td>$1,850</td><td><span class="tag greentag">Paid</span></td><td>Apr 20, 2025</td></tr>
+              <tr><td>INV-1685</td><td>SEO Campaign</td><td>Apr 15, 2025</td><td>$2,320</td><td><span class="tag yellowtag">Pending</span></td><td>Apr 18, 2025</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
+
+      <!-- Section 5: Payments -->
+      <section class="admin-page" id="payments">
+        <div class="admin-title-row"><div><h1>Payments &amp; Transactions</h1><p>Track cashflow and incoming payments.</p></div></div>
+        <section class="admin-panel big-table">
+          <table>
+            <thead><tr><th>Payment ID</th><th>Invoice ID</th><th>Method</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr data-user-tab="payment-detail" data-admin-tab="payment-detail"><td>PAY-2587</td><td>INV-1687</td><td>Credit Card</td><td>Apr 28, 2025</td><td>$2,450</td><td><span class="tag greentag">Successful</span></td></tr>
+              <tr><td>PAY-2586</td><td>INV-1686</td><td>PayPal</td><td>Apr 20, 2025</td><td>$1,850</td><td><span class="tag greentag">Successful</span></td></tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
+
+      <!-- Section 6: Messages -->
+      <section class="admin-page" id="messages">
+        <div class="admin-title-row"><div><h1>Messages &amp; Chat</h1><p>Communicate with consulting advisors and client managers.</p></div></div>
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+          <section class="admin-panel">
+            <div style="display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #F1F5F9; align-items: center;">
+              <img src="home.img/11-team-sarah-keihl.webp" class="admin-avatar">
+              <div><strong>Sarah Keihl</strong><br><small style="color:#64748B;">Project update &amp; next steps</small></div>
+            </div>
+          </section>
+          <section class="admin-panel">
+            <div style="padding-bottom: 12px; border-bottom: 1px solid #F1F5F9; margin-bottom: 16px;"><strong>Sarah Keihl</strong> <span style="font-size:11px; color:#10B981;">Online</span></div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+              <div style="background:#F1F5F9; padding:10px 14px; border-radius:12px; max-width:80%; font-size:13px;">Hi Client User, I wanted to check on the progress of the e-commerce website.</div>
+              <div style="background:#00A2CF; color:#FFFFFF; padding:10px 14px; border-radius:12px; max-width:80%; align-self:flex-end; font-size:13px;">Hi Sarah! Everything is on track. Development is 75% complete.</div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <input class="dash-input" style="flex:1; margin-bottom:0;" placeholder="Type your message...">
+              <button class="primary-dash-btn">Send ➤</button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Section 7: Notifications -->
+      <section class="admin-page" id="notifications">
+        <div class="admin-title-row"><div><h1>Notifications</h1><p>Stay updated with latest activity alerts.</p></div><a class="admin-view">Mark all as read</a></div>
+        <section class="admin-panel" style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="padding: 12px; border-bottom: 1px solid #F1F5F9; display: flex; gap: 14px; align-items: center;">
+            <span class="admin-kpi-icon" style="width:36px; height:36px; font-size:14px;">▣</span>
+            <div><strong>Project Update</strong><p style="font-size:12px; color:#64748B; margin:0;">E-commerce Website progress updated to 75%</p></div>
+          </div>
+          <div style="padding: 12px; display: flex; gap: 14px; align-items: center;">
+            <span class="admin-kpi-icon" style="width:36px; height:36px; font-size:14px; background:rgba(16,185,129,0.15); color:#10B981;">$</span>
+            <div><strong>Payment Received</strong><p style="font-size:12px; color:#64748B; margin:0;">Payment of $2,450 for invoice #INV-1687 received</p></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Section 8: Profile -->
+      <section class="admin-page" id="profile">
+        <div class="admin-title-row"><div><h1>Profile Settings</h1><p>Manage personal account details.</p></div></div>
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+          <section class="admin-panel text-center">
+            <img src="home.img/02-hero-customer-avatar-2.webp" class="admin-avatar" style="width:80px; height:80px; margin:0 auto 16px;">
+            <h3>Client User</h3>
+            <p style="color:#00A2CF; font-weight:600;">Login Client</p>
+            <small style="color:#94A3B8;">Member since Jan 15, 2025</small>
+          </section>
+          <section class="admin-panel">
+            <form style="display: flex; flex-direction: column; gap: 14px;">
+              <label style="font-size:13px; font-weight:600;">Full Name <input class="dash-input" value="Client User" style="display:block; width:100%; margin-top:4px;"></label>
+              <label style="font-size:13px; font-weight:600;">Email Address <input class="dash-input" value="user@example.com" style="display:block; width:100%; margin-top:4px;"></label>
+              <button type="button" class="primary-dash-btn" style="align-self:flex-start;">Save Changes</button>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <!-- Section 9: Settings -->
+      <section class="admin-page" id="settings">
+        <div class="admin-title-row"><div><h1>Settings</h1><p>Manage workspace preferences &amp; options.</p></div></div>
+        <section class="admin-panel" style="max-width: 600px;">
+          <h3>General Settings</h3>
+          <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 16px;">
+            <label style="font-size:13px; font-weight:600;">Language <select class="dash-input" style="display:block; width:100%; margin-top:4px;"><option>English (US)</option></select></label>
+            <label style="font-size:13px; font-weight:600;">Timezone <select class="dash-input" style="display:block; width:100%; margin-top:4px;"><option>(GMT-05:00) New York</option></select></label>
+            <button class="primary-dash-btn" style="align-self:flex-start;">Save Settings</button>
+          </div>
+        </section>
+      </section>
+
+      <!-- Section 10: Project Detail Modal View -->
+      <section class="admin-page" id="project-detail">
+        <div class="admin-title-row">
+          <div><a class="admin-view" data-user-tab="projects" data-admin-tab="projects" href="#projects">‹ Back to Projects</a><h1>E-commerce Website</h1></div>
+          <span class="tag redtag">In Progress</span>
+        </div>
+        <section class="admin-panel">
+          <h3>Project Overview</h3>
+          <p style="color:#64748B; line-height:1.6; margin-top:8px;">Building a modern and responsive e-commerce web application with integrated analytics and payment gateway.</p>
+          <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+            <div style="background:#F8FAFC; padding:12px; border-radius:10px;"><b>Category</b><br><small>Web Development</small></div>
+            <div style="background:#F8FAFC; padding:12px; border-radius:10px;"><b>Budget</b><br><small>$4,250</small></div>
+            <div style="background:#F8FAFC; padding:12px; border-radius:10px;"><b>Start Date</b><br><small>Apr 01, 2025</small></div>
+            <div style="background:#F8FAFC; padding:12px; border-radius:10px;"><b>Due Date</b><br><small>May 28, 2025</small></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Section 11: Invoice Detail Modal View -->
+      <section class="admin-page" id="invoice-detail">
+        <div class="admin-title-row">
+          <div><a class="admin-view" data-user-tab="invoices" data-admin-tab="invoices" href="#invoices">‹ Back to Invoices</a><h1>Invoice #INV-1687</h1></div>
+          <button class="primary-dash-btn">⇩ Download PDF</button>
+        </div>
+        <section class="admin-panel">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+            <div><h3>Invoice #INV-1687</h3><span class="tag greentag">Paid</span><p style="color:#64748B; font-size:13px; margin-top:6px;">Project: E-commerce Website</p></div>
+            <div style="text-align: right;"><strong>Total Paid</strong><h2 style="color:#10B981; font-size:28px;">$3,450.00</h2></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Section 12: Logout View -->
+      <section class="admin-page logout-page" id="logout">
+        <div class="admin-panel text-center" style="max-width: 420px; margin: 60px auto;">
+          <span style="font-size:42px;">⇥</span>
+          <h2>Confirm Logout</h2>
+          <p style="color:#64748B; margin-bottom: 24px;">Are you sure you want to log out of your session?</p>
+          <div style="display: flex; gap: 12px; justify-content: center;">
+            <button class="admin-select" data-user-tab="dashboard" data-admin-tab="dashboard">Cancel</button>
+            <button class="primary-dash-btn" onclick="location.href='login.html'">Yes, Logout</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('[data-user-tab], [data-admin-tab]');
+      const pages = document.querySelectorAll('.admin-page');
+      function showTab(id) {
+        if (!document.getElementById(id)) return;
+        pages.forEach(p => p.classList.toggle('active', p.id === id));
+        tabs.forEach(t => t.classList.toggle('active', (t.dataset.userTab === id || t.dataset.adminTab === id)));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      tabs.forEach(t => {
+        t.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = t.dataset.userTab || t.dataset.adminTab;
+          showTab(targetId);
+        });
+      });
+
+      const initial = location.hash.replace('#', '');
+      if (initial && document.getElementById(initial)) showTab(initial);
+
+      // Mobile Sidebar Toggle
+      const app = document.querySelector('.admin-v2');
+      if (app && !document.querySelector('.dashboard-mobile-toggle')) {
+        const btn = document.createElement('button');
+        btn.className = 'dashboard-mobile-toggle';
+        btn.type = 'button';
+        btn.textContent = '☰';
+        document.body.appendChild(btn);
+
+        btn.addEventListener('click', () => {
+          app.classList.toggle('sidebar-open');
+          btn.textContent = app.classList.contains('sidebar-open') ? '×' : '☰';
+        });
+
+        app.querySelectorAll('.admin-nav a, .admin-logout').forEach(a => {
+          a.addEventListener('click', () => {
+            app.classList.remove('sidebar-open');
+            btn.textContent = '☰';
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

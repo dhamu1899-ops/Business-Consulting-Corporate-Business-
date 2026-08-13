@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 Page Not Found - Stackly</title>
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="error-404-body"> 
+
+  <!-- Preloader Screen with Logo -->
+  <div id="preloader">
+    <div class="preloader-content">
+      <img src="home.img/01-header-logo.webp" alt="Stackly Logo" class="preloader-logo">
+      <div class="preloader-spinner"></div>
+      <div class="preloader-bar-wrapper">
+        <div class="preloader-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="error-404-page">
+    <!-- Top-Right Close Button -->
+    <a href="index.html" class="auth-close-btn" aria-label="Close page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </a>
+
+    <!-- 404 Content -->
+    <div class="error-404-content">
+      <div class="error-404-graphic">
+        <img src="home.img/404.webp" alt="404 Page Not Found">
+      </div>
+      <div class="error-404-btn-group">
+        <button type="button" onclick="history.back()" class="btn-go-back">GO BACK</button>
+        <a href="index.html" class="btn-back-home">BACK TO HOME</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
