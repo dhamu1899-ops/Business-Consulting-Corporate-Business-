@@ -5,19 +5,32 @@
 'use strict';
 
 /* ----------------------------------------------------------
-   1. CUSTOM CURSOR
+   1. CUSTOM CURSOR & MOUSE POINTER ANIMATION
    ---------------------------------------------------------- */
 function initCursor() {
-  const cursor = document.createElement('div');
-  cursor.id = 'custom-cursor';
-  const cursorDot = document.createElement('div');
-  cursorDot.id = 'cursor-dot';
-  document.body.appendChild(cursor);
-  document.body.appendChild(cursorDot);
+  let cursor = document.getElementById('custom-cursor');
+  let cursorDot = document.getElementById('cursor-dot');
+  
+  if (!cursor) {
+    cursor = document.createElement('div');
+    cursor.id = 'custom-cursor';
+    document.body.appendChild(cursor);
+  }
+  if (!cursorDot) {
+    cursorDot = document.createElement('div');
+    cursorDot.id = 'cursor-dot';
+    document.body.appendChild(cursorDot);
+  }
 
-  let mouseX = 0, mouseY = 0, curX = 0, curY = 0;
+  let mouseX = -100, mouseY = -100, curX = -100, curY = -100;
+  let hasMoved = false;
 
   document.addEventListener('mousemove', (e) => {
+    if (!hasMoved) {
+      hasMoved = true;
+      cursor.style.opacity = '1';
+      cursorDot.style.opacity = '1';
+    }
     mouseX = e.clientX;
     mouseY = e.clientY;
     cursorDot.style.left = mouseX + 'px';
@@ -25,16 +38,15 @@ function initCursor() {
   });
 
   function animateCursor() {
-    curX += (mouseX - curX) * 0.15;
-    curY += (mouseY - curY) * 0.15;
+    curX += (mouseX - curX) * 0.18;
+    curY += (mouseY - curY) * 0.18;
     cursor.style.left = curX + 'px';
     cursor.style.top = curY + 'px';
     requestAnimationFrame(animateCursor);
   }
   animateCursor();
 
-  const interactables = document.querySelectorAll('a, button, .service-card, .team-card, .pricing-card, .blog-card, .blog-arrow');
-  interactables.forEach(el => {
+  document.querySelectorAll('a, button, input, select, textarea, .service-card, .team-card, .pricing-card, .blog-card').forEach(el => {
     el.addEventListener('mouseenter', () => cursor.classList.add('cursor-expanded'));
     el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-expanded'));
   });
@@ -107,32 +119,58 @@ function initNavbar() {
     navbar.classList.toggle('navbar-scrolled', window.scrollY > 60);
   });
 
-  // Hamburger toggle
+  // Hamburger toggle with body scroll locking and backdrop
   const hamburger = document.querySelector('.hamburger');
   const navMenu = document.querySelector('.nav-menu');
   if (hamburger && navMenu) {
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('open');
-      navMenu.classList.toggle('nav-open');
+    let backdrop = document.querySelector('.nav-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.className = 'nav-backdrop';
+      document.body.appendChild(backdrop);
+    }
+
+    function closeMenu() {
+      hamburger.classList.remove('open');
+      navMenu.classList.remove('nav-open');
+      backdrop.classList.remove('active');
+      document.body.classList.remove('no-scroll');
+      document.documentElement.classList.remove('no-scroll');
+    }
+
+    function openMenu() {
+      hamburger.classList.add('open');
+      navMenu.classList.add('nav-open');
+      backdrop.classList.add('active');
+      document.body.classList.add('no-scroll');
+      document.documentElement.classList.add('no-scroll');
+    }
+
+    hamburger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = navMenu.classList.contains('nav-open');
+      if (isOpen) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     });
-    navMenu.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', () => {
-        hamburger.classList.remove('open');
-        navMenu.classList.remove('nav-open');
-      });
+
+    backdrop.addEventListener('click', closeMenu);
+
+    navMenu.querySelectorAll('.nav-link, .mobile-login-btn').forEach(link => {
+      link.addEventListener('click', closeMenu);
     });
 
     document.addEventListener('click', (e) => {
       if (navMenu.classList.contains('nav-open') && !navMenu.contains(e.target) && !hamburger.contains(e.target)) {
-        hamburger.classList.remove('open');
-        navMenu.classList.remove('nav-open');
+        closeMenu();
       }
     });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && navMenu.classList.contains('nav-open')) {
-        hamburger.classList.remove('open');
-        navMenu.classList.remove('nav-open');
+        closeMenu();
       }
     });
   }
@@ -143,30 +181,34 @@ function initNavbar() {
    ---------------------------------------------------------- */
 function initScrollReveal() {
   const els = document.querySelectorAll(
-    '.section-tag, .section-title, .section-subtitle, ' +
-    '.service-card, .team-card, .pricing-card, .blog-card, ' +
-    '.why-choose-item, .brand-logo, .case-study-card, ' +
-    '.about-text-col, .about-image-col, .stats-bar, ' +
-    '.testimonial-card, .cta-content, .contact-card, ' +
-    '.hero-text, .hero-visual, .page-banner-content, ' +
-    '.info-card, .accordion-item, .footer-col, .auth-left, .auth-right, ' +
-    '.dark-stat-box'
+    'section, .section-header, .section-tag, .section-title, .section-desc, ' +
+    '.service-item, .service-card, .team-card, .pricing-card, .blog-card, ' +
+    '.benefit-item, .case-card, .case-study-card, .about-intro-col, .about-visual, ' +
+    '.why-choose-content, .why-choose-visual, .partner-strip, .testimonials-section, ' +
+    '.testimonial-card, .cta-banner-section, .contact-left, .contact-sidebar, ' +
+    '.hero-text, .hero-visual, .page-banner-content, .accordion-item, .footer-col, ' +
+    '.custom-stat-card, .info-card, .sidebar-widget, ' +
+    '.reveal, .reveal-up, .reveal-scale, .reveal-left, .reveal-right'
   );
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
+        obs.unobserve(entry.target); // Trigger scroll animation ONLY ONCE on first scroll into view
       }
     });
-  }, { threshold: 0.10, rootMargin: '0px 0px -50px 0px' });
+  }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
 
-  els.forEach((el, i) => {
-    el.classList.add('reveal');
-    const siblings = [...(el.parentElement?.children || [])].filter(c => c.classList.contains(el.classList[0]) || c.tagName === el.tagName);
+  els.forEach((el) => {
+    if (!el.classList.contains('reveal') && !el.classList.contains('reveal-left') && !el.classList.contains('reveal-right') && !el.classList.contains('reveal-scale')) {
+      el.classList.add('reveal');
+    }
+    const siblings = [...(el.parentElement?.children || [])].filter(c => c.classList.contains(el.classList[0]));
     const idx = siblings.indexOf(el);
-    if (idx > 0 && idx < 6) el.style.transitionDelay = (idx * 0.12) + 's';
+    if (idx > 0 && idx < 8) {
+      el.style.transitionDelay = (idx * 0.08) + 's';
+    }
     observer.observe(el);
   });
 }
@@ -483,8 +525,16 @@ function initNewsletterForm() {
   document.querySelectorAll('.newsletter-form').forEach(form => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      showToast('✓  Subscribed successfully!');
       form.reset();
+      window.location.href = '404.html';
+    });
+  });
+
+  document.querySelectorAll('.contact-form-card').forEach(form => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.reset();
+      showToast('✓ Successfully Registered!');
     });
   });
 }
@@ -751,12 +801,6 @@ function initModalPopups() {
   if (document.getElementById('siteModal')) return;
 
   const modalHTML = `
-    <div id="siteModal" class="site-modal-backdrop">
-      <div class="site-modal-card">
-        <button class="site-modal-close" id="modalCloseBtn" aria-label="Close Modal">&times;</button>
-        <div class="site-modal-body" id="modalBody"></div>
-      </div>
-    </div>
   `;
   document.body.insertAdjacentHTML('beforeend', modalHTML);
 
@@ -787,7 +831,66 @@ function initModalPopups() {
 
   // Attach triggers to CTA, Pricing, Service, and Case Study buttons
   document.addEventListener('click', (e) => {
-    // Hero CTA & Consultation buttons
+    // 1. Service "Learn More ↗" links
+    const serviceLink = e.target.closest('.service-link, .other-service-link');
+    if (serviceLink && (serviceLink.getAttribute('href') === '#' || !serviceLink.getAttribute('href'))) {
+      e.preventDefault();
+      const serviceCard = serviceLink.closest('.service-item, .service-card, li');
+      const title = serviceCard ? serviceCard.querySelector('.service-heading, h3, span')?.textContent || 'Service Details' : 'Strategic Planning Service';
+      const cleanTitle = title.replace(/↗/g, '').trim();
+      openModal(`
+        <span class="section-tag">Service Details</span>
+        <h3 class="modal-title">${cleanTitle}</h3>
+        <p class="modal-subtitle">Tailored business advisory &amp; operational growth solutions.</p>
+        <div style="color: var(--slate-body); font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+          Our ${cleanTitle} team works closely with your leadership to optimize core workflows, analyze competitive intelligence, and deliver measurable growth.
+        </div>
+        <form class="modal-form" id="serviceBookForm">
+          <input type="text" class="modal-input" placeholder="Your Name" required>
+          <input type="email" class="modal-input" placeholder="Email Address" required>
+          <button type="submit" class="btn-get-started w-full">REQUEST CONSULTATION</button>
+        </form>
+      `);
+      const form = document.getElementById('serviceBookForm');
+      if (form) {
+        form.addEventListener('submit', (fe) => {
+          fe.preventDefault();
+          closeModal();
+          showToast(`✓ Consultation requested for ${cleanTitle}!`);
+        });
+      }
+      return;
+    }
+
+    // 2. Case Study "Read More ↗" & Section Read More links
+    const caseLink = e.target.closest('.case-link, .btn-read-more, .btn-case-study');
+    if (caseLink && (caseLink.getAttribute('href') === '#' || !caseLink.getAttribute('href'))) {
+      e.preventDefault();
+      const caseCard = caseLink.closest('.case-card, .why-choose-content');
+      const title = caseCard ? caseCard.querySelector('.case-client, .section-title')?.textContent || 'Case Study Overview' : 'Case Study Breakdown';
+      const cleanTitle = title.replace(/↗/g, '').trim();
+      openModal(`
+        <span class="section-tag">Case Study Breakdown</span>
+        <h3 class="modal-title">${cleanTitle}</h3>
+        <p class="modal-subtitle">Comprehensive business outcome and strategic results report.</p>
+        <div style="color: var(--slate-body); font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
+          In this engagement, we conducted an end-to-end digital modernization program, unlocking scalable revenue growth and reducing operational overhead by 38%.
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 16px;">
+          <div style="flex: 1; background: #F1F5F9; padding: 14px; border-radius: 10px; text-align: center;">
+            <span style="font-size: 20px; font-weight: 800; color: #00A2CF; display: block;">+145%</span>
+            <span style="font-size: 11px; color: #64748B;">Growth</span>
+          </div>
+          <div style="flex: 1; background: #F1F5F9; padding: 14px; border-radius: 10px; text-align: center;">
+            <span style="font-size: 20px; font-weight: 800; color: #00A2CF; display: block;">3.2x</span>
+            <span style="font-size: 11px; color: #64748B;">ROI Boost</span>
+          </div>
+        </div>
+      `);
+      return;
+    }
+
+    // 3. Hero CTA & Consultation buttons
     const ctaBtn = e.target.closest('.btn-get-started, .btn-discover, .btn-request-cta');
     if (ctaBtn) {
       e.preventDefault();
@@ -798,7 +901,7 @@ function initModalPopups() {
         <form class="modal-form" id="consultForm">
           <input type="text" class="modal-input" placeholder="Your Full Name" required>
           <input type="email" class="modal-input" placeholder="Your Email Address" required>
-          <input type="tel" class="modal-input" placeholder="Phone Number">
+          <input type="tel" class="modal-input" placeholder="Phone Number" required>
           <textarea class="modal-textarea" placeholder="How can we help your business?" rows="3" required></textarea>
           <button type="submit" class="btn-get-started w-full">SUBMIT REQUEST</button>
         </form>
@@ -812,9 +915,18 @@ function initModalPopups() {
           showToast('✓ Request Submitted Successfully! We will contact you soon.');
         });
       }
+      return;
     }
 
-    // Pricing Plan buttons
+    // 4. VIEW ALL buttons
+    const viewAllBtn = e.target.closest('.btn-view-all');
+    if (viewAllBtn && (viewAllBtn.getAttribute('href') === '#' || !viewAllBtn.getAttribute('href'))) {
+      e.preventDefault();
+      window.location.href = 'services.html';
+      return;
+    }
+
+    // 5. Pricing Plan buttons
     const planBtn = e.target.closest('.btn-plan-outline, .btn-plan-filled');
     if (planBtn) {
       e.preventDefault();
@@ -842,32 +954,41 @@ function initModalPopups() {
           showToast(`✓ Registered for ${title}! Check your email for next steps.`);
         });
       }
+      return;
     }
 
-    // Case Study buttons
-    const caseBtn = e.target.closest('.btn-case-study, .case-card');
-    if (caseBtn && !e.target.closest('a')) {
-      const client = caseBtn.querySelector('.case-client')?.textContent || 'Case Study';
+    // 6. Dashboard Action Buttons (+ New Project, + Add Client, etc.)
+    const primaryDashBtn = e.target.closest('.primary-dash-btn');
+    if (primaryDashBtn) {
+      e.preventDefault();
+      const label = primaryDashBtn.textContent.trim();
       openModal(`
-        <span class="section-tag">Case Study Preview</span>
-        <h3 class="modal-title">${client}</h3>
-        <p class="modal-subtitle">Detailed business breakdown and strategic results summary.</p>
-        <div class="modal-case-body">
-          <p style="color: var(--slate-body); line-height: 1.6; margin-bottom: 16px;">
-            We partnered with ${client} to overhaul their operational workflow, modernizing digital infrastructure and delivering a 140% growth in qualified pipeline within 6 months.
-          </p>
-          <div style="display: flex; gap: 16px; margin-top: 20px;">
-            <div style="flex: 1; background: #F1F5F9; padding: 16px; border-radius: 12px; text-align: center;">
-              <span style="font-size: 24px; font-weight: 800; color: #00A2CF; display: block;">+140%</span>
-              <span style="font-size: 12px; color: #64748B;">Growth</span>
-            </div>
-            <div style="flex: 1; background: #F1F5F9; padding: 16px; border-radius: 12px; text-align: center;">
-              <span style="font-size: 24px; font-weight: 800; color: #00A2CF; display: block;">2.4x</span>
-              <span style="font-size: 12px; color: #64748B;">ROI Boost</span>
-            </div>
-          </div>
-        </div>
+        <span class="section-tag">Dashboard Action</span>
+        <h3 class="modal-title">${label}</h3>
+        <p class="modal-subtitle">Enter details to save a new item.</p>
+        <form class="modal-form" id="dashActionForm">
+          <input type="text" class="modal-input" placeholder="Title / Name" required>
+          <input type="text" class="modal-input" placeholder="Category / Description" required>
+          <button type="submit" class="btn-get-started w-full">SAVE ENTRY</button>
+        </form>
       `);
+      const form = document.getElementById('dashActionForm');
+      if (form) {
+        form.addEventListener('submit', (fe) => {
+          fe.preventDefault();
+          closeModal();
+          showToast(`✓ Saved entry for ${label}!`);
+        });
+      }
+      return;
+    }
+
+    // 7. Dashboard Logout Redirect
+    const logoutBtn = e.target.closest('.admin-logout, [data-admin-tab="logout"], [data-user-tab="logout"]');
+    if (logoutBtn) {
+      e.preventDefault();
+      window.location.href = 'index.html';
+      return;
     }
   });
 }
@@ -903,26 +1024,46 @@ function showToast(message) {
    25. PASSWORD SHOW/HIDE TOGGLE (LOGIN & SIGNUP PAGES)
    ---------------------------------------------------------- */
 function initPasswordToggle() {
-  const passwordInputs = document.querySelectorAll('input[type="password"]');
-  passwordInputs.forEach(input => {
+  document.querySelectorAll('.password-toggle, .pwd-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const input = btn.parentElement ? btn.parentElement.querySelector('input') : null;
+      if (!input) return;
+      const isPwd = input.type === 'password';
+      input.type = isPwd ? 'text' : 'password';
+      btn.classList.toggle('active', isPwd);
+      btn.innerHTML = isPwd ? `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      ` : `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      `;
+    });
+  });
+
+  document.querySelectorAll('input[type="password"]').forEach(input => {
     const parent = input.parentElement;
-    if (!parent || parent.querySelector('.pwd-toggle-btn')) return;
+    if (!parent || parent.querySelector('.password-toggle, .pwd-toggle-btn')) return;
 
     parent.style.position = 'relative';
     const toggleBtn = document.createElement('button');
     toggleBtn.type = 'button';
-    toggleBtn.className = 'pwd-toggle-btn';
+    toggleBtn.className = 'password-toggle';
     toggleBtn.setAttribute('aria-label', 'Toggle Password Visibility');
     toggleBtn.innerHTML = `
-      <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
     `;
-
     parent.appendChild(toggleBtn);
 
-    toggleBtn.addEventListener('click', () => {
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       const isPwd = input.type === 'password';
       input.type = isPwd ? 'text' : 'password';
       toggleBtn.classList.toggle('active', isPwd);
+      toggleBtn.innerHTML = isPwd ? `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      ` : `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      `;
     });
   });
 }
@@ -975,6 +1116,114 @@ function initAboutVisionTabs() {
 }
 
 /* ----------------------------------------------------------
+   27. GLOBAL FORM MANDATORY & EMAIL VALIDATION
+   ---------------------------------------------------------- */
+function initFormValidations() {
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', (e) => {
+      const emailInputs = form.querySelectorAll('input[type="email"]');
+      let valid = true;
+      emailInputs.forEach(emailInput => {
+        const val = emailInput.value.trim();
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (val && !emailRegex.test(val)) {
+          valid = false;
+          emailInput.setCustomValidity('Please enter a valid email address (e.g., name@example.com)');
+          emailInput.reportValidity();
+        } else {
+          emailInput.setCustomValidity('');
+        }
+      });
+      if (!valid) {
+        e.preventDefault();
+      }
+    });
+
+    form.querySelectorAll('input[type="email"]').forEach(emailInput => {
+      emailInput.addEventListener('input', () => {
+        emailInput.setCustomValidity('');
+      });
+    });
+  });
+}
+
+/* ----------------------------------------------------------
+   28. TIMELINE SCROLL ANIMATION
+   ---------------------------------------------------------- */
+function initTimelineScrollAnimation() {
+  const timelineItems = document.querySelectorAll('.timeline-section .timeline-item, .timeline-item');
+  if (!timelineItems.length) return;
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        const node = entry.target.querySelector('.timeline-node');
+        if (node) node.classList.add('node-active');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2, rootMargin: '0px 0px -30px 0px' });
+
+  timelineItems.forEach((item, idx) => {
+    item.classList.add('reveal-up');
+    item.style.transitionDelay = (idx * 0.12) + 's';
+    observer.observe(item);
+  });
+}
+
+/* ----------------------------------------------------------
+   29. STRATEGIC FORM & BUTTON FUNCTIONALITY
+   ---------------------------------------------------------- */
+function initStrategicFormInteractions() {
+  // Service selection links (Service Cards & Sidebar)
+  document.querySelectorAll('[data-service]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const targetId = link.getAttribute('href');
+      if (targetId && targetId.startsWith('#')) {
+        const section = document.querySelector(targetId);
+        if (section) {
+          e.preventDefault();
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+      const serviceVal = link.getAttribute('data-service');
+      const selectEl = document.getElementById('service-select');
+      if (selectEl && serviceVal) {
+        selectEl.value = serviceVal;
+        selectEl.dispatchEvent(new Event('change'));
+      }
+    });
+  });
+
+  // CTA Contact Us button
+  const ctaBtn = document.getElementById('btn-contact-us');
+  if (ctaBtn) {
+    ctaBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const form = document.getElementById('service-request-form');
+      if (form) {
+        form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const nameInput = document.getElementById('user-name');
+        if (nameInput) setTimeout(() => nameInput.focus(), 600);
+      }
+    });
+  }
+
+  // Registration Form Submission
+  const regForm = document.getElementById('service-request-form');
+  if (regForm) {
+    regForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('user-name');
+      const name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : 'Client';
+      showToast(`✓ Registration Successful! Thank you ${name}, our strategic team will contact you shortly.`);
+      regForm.reset();
+    });
+  }
+}
+
+/* ----------------------------------------------------------
    INIT ALL
    ---------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
@@ -1001,7 +1250,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initModalPopups();
   initPasswordToggle();
   initAboutVisionTabs();
+  initFormValidations();
+  initTimelineScrollAnimation();
+  initStrategicFormInteractions();
 });
+
 
 
 
