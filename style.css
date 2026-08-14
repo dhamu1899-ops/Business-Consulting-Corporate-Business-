@@ -152,16 +152,23 @@ img {
 /* ==========================================================================
    1. HEADER NAVBAR (PDF PAGE 15)
    ========================================================================== */
+body {
+  padding-top: 92px;
+}
+
 .navbar {
   width: 100%;
   height: 92px;
   background-color: var(--bg-white);
   display: flex;
   align-items: center;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1002;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .navbar-container {
@@ -2787,7 +2794,8 @@ img {
   }
 
   .logo-img {
-    height: 80px;
+    height: 70px !important;
+    max-height: 70px !important;
   }
 
   .nav-menu {
@@ -3402,12 +3410,17 @@ img {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.6s ease;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(1);
 }
 
 #preloader.preloader-hidden {
   opacity: 0;
   visibility: hidden;
+  transform: scale(1.02);
+  pointer-events: none;
 }
 
 .preloader-content {
@@ -3419,28 +3432,28 @@ img {
 }
 
 .preloader-logo {
-  height: 95px;
+  height: 85px;
   width: auto;
   object-fit: contain;
-  animation: preloaderPulse 1.8s ease-in-out infinite;
+  animation: preloaderPulse 1.5s ease-in-out infinite;
 }
 
 @keyframes preloaderPulse {
   0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.06); opacity: 0.85; }
+  50% { transform: scale(1.05); opacity: 0.85; }
 }
 
 .preloader-spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid #C1E9F5;
-  border-top-color: #00A2CF;
+  width: 44px;
+  height: 44px;
+  border: 3.5px solid #C1E9F5;
+  border-top-color: #009BCC;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.75s linear infinite;
 }
 
 .preloader-bar-wrapper {
-  width: 220px;
+  width: 200px;
   height: 4px;
   background-color: #E2E8F0;
   border-radius: 4px;
@@ -3451,9 +3464,9 @@ img {
 .preloader-bar {
   width: 0%;
   height: 100%;
-  background: linear-gradient(90deg, #00A2CF, #55B9DA);
+  background: linear-gradient(90deg, #009BCC, #00C6FF);
   border-radius: 4px;
-  animation: preloaderFill 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transition: width 2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes preloaderFill {
@@ -5134,8 +5147,10 @@ section.section-active {
 }
 
 .dashboard-mobile-brand img {
-  height: 70px;
+  height: 70px !important;
+  max-height: 70px !important;
   width: auto;
+  object-fit: contain;
 }
 
 .chat-panel {
@@ -5982,5 +5997,129 @@ img.timeline-circle-img:hover {
   background-color: #009BCC !important;
   box-shadow: 0 0 0 5px #FFFFFF, 0 0 0 9px rgba(0, 155, 204, 0.35) !important;
   transform: scale(1.1);
+}
+
+/* ==========================================================================
+   Capabilities 8-Card Section (Premium Styling & Hover Effects)
+   ========================================================================== */
+.capabilities-section {
+  padding: 90px 0;
+  background-color: #F8FAFC;
+  border-top: 1px solid #E5E7EB;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.capabilities-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  margin-top: 50px;
+}
+
+.capability-card {
+  background-color: #FFFFFF;
+  border-radius: 18px;
+  padding: 32px 26px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.capability-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 36px rgba(0, 155, 204, 0.12);
+  border-color: #009BCC;
+}
+
+.capability-image-box {
+  width: 100%;
+  height: 170px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background-color: #F1F5F9;
+}
+
+.capability-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.capability-card:hover .capability-image-box img {
+  transform: scale(1.08);
+}
+
+.capability-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #009BCC;
+  background-color: #EEF9FC;
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+  margin-bottom: 12px;
+}
+
+.capability-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000000;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+
+.capability-desc {
+  font-size: 14px;
+  color: #4B5563;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.capability-link {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000000;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1.5px solid #000000;
+  padding-bottom: 2px;
+  width: fit-content;
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.capability-card:hover .capability-link {
+  color: #009BCC;
+  border-color: #009BCC;
+}
+
+/* Responsive Grid for Capabilities */
+@media (max-width: 1200px) {
+  .capabilities-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .capabilities-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .capabilities-section {
+    padding: 60px 0;
+  }
 }
 

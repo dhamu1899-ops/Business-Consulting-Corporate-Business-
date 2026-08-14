@@ -2428,7 +2428,8 @@ img {
   }
 
   .logo-img {
-    height: 56px;
+    height: 70px !important;
+    max-height: 70px !important;
   }
 
   .nav-menu {
@@ -4290,8 +4291,10 @@ section.section-active {
 }
 
 .dashboard-mobile-brand img {
-  height: 70px;
+  height: 70px !important;
+  max-height: 70px !important;
   width: auto;
+  object-fit: contain;
 }
 
 .chat-panel {
