@@ -502,7 +502,7 @@ function initNewsletterForm() {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       form.reset();
-      window.location.href = '404.html';
+      showToast('✓ Thank you for subscribing to our newsletter!');
     });
   });
 
